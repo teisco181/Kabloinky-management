@@ -1,0 +1,232 @@
+{
+  "entities": {
+    "ServerSettings": {
+      "title": "ServerSettings",
+      "description": "Global server configuration, platforms, connection info and access passwords",
+      "type": "object",
+      "properties": {
+        "serverName": { "type": "string", "maxLength": 100 },
+        "serverHost": { "type": "string", "maxLength": 100 },
+        "serverPort": { "type": "number" },
+        "bedrockPort": { "type": "number" },
+        "serverPlatform": { "type": "string", "enum": ["both", "java", "bedrock"] },
+        "discordUrl": { "type": "string", "maxLength": 200 },
+        "serverVersion": { "type": "string", "maxLength": 50 },
+        "serverAccessCode": { "type": "string", "maxLength": 100 },
+        "serverAccessCodes": { "type": "array" },
+        "adminPassword": { "type": "string", "maxLength": 100 },
+        "adminPasswords": { "type": "array" },
+        "motherPassword": { "type": "string", "maxLength": 100 },
+        "motherPasswordHint": { "type": "string", "maxLength": 200 },
+        "customPasswords": { "type": "array" },
+        "pageAccess": { "type": "object" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["serverName", "serverHost", "serverPort", "motherPassword"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Minecraft player account registered on the portal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "username": { "type": "string", "maxLength": 32 },
+        "role": { "type": "string", "enum": ["eigenaar", "beheerder", "moderator", "vip", "speler"] },
+        "createdAt": { "type": "string" },
+        "avatarUrl": { "type": "string", "maxLength": 500 },
+        "organizationIds": { "type": "array" },
+        "allowedPages": { "type": "array" },
+        "moderatorPages": { "type": "array" },
+        "passwordHash": { "type": "string", "maxLength": 200 }
+      },
+      "required": ["id", "username", "createdAt"]
+    },
+    "Organization": {
+      "title": "Organization",
+      "description": "Minecraft player clan or organization",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "tag": { "type": "string", "maxLength": 20 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "bannerColor": { "type": "string", "maxLength": 50 },
+        "leaderId": { "type": "string", "maxLength": 128 },
+        "leaderName": { "type": "string", "maxLength": 50 },
+        "members": { "type": "array" },
+        "hqCoordinates": { "type": "string", "maxLength": 100 },
+        "approved": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "tag", "leaderName", "createdAt"]
+    },
+    "EventItem": {
+      "title": "EventItem",
+      "description": "Minecraft server event or tournament",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "location": { "type": "string", "maxLength": 150 },
+        "date": { "type": "string", "maxLength": 20 },
+        "time": { "type": "string", "maxLength": 20 },
+        "authorType": { "type": "string", "enum": ["player", "organization"] },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 50 },
+        "organizationName": { "type": "string", "maxLength": 100 },
+        "approved": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "attendees": { "type": "array" }
+      },
+      "required": ["id", "title", "date", "time", "authorName", "createdAt"]
+    },
+    "PublicPlan": {
+      "title": "PublicPlan",
+      "description": "Community project, build or redstone plan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "enum": ["Bouwproject", "Redstone & Tech", "PvP & Raid", "Economie & Farm", "Overig"] },
+        "description": { "type": "string", "maxLength": 3000 },
+        "authorType": { "type": "string", "enum": ["player", "organization"] },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 50 },
+        "organizationName": { "type": "string", "maxLength": 100 },
+        "coordinates": { "type": "string", "maxLength": 100 },
+        "materialsNeeded": { "type": "string", "maxLength": 500 },
+        "likes": { "type": "array" },
+        "commentsCount": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["In Voorbereiding", "Bezig", "Voltooid"] }
+      },
+      "required": ["id", "title", "description", "authorName", "createdAt"]
+    },
+    "PlanComment": {
+      "title": "PlanComment",
+      "description": "Discussion comment on a community plan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "planId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "username": { "type": "string", "maxLength": 50 },
+        "userRole": { "type": "string" },
+        "content": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "planId", "username", "content", "createdAt"]
+    },
+    "ServerRule": {
+      "title": "ServerRule",
+      "description": "Minecraft server gameplay rule",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "number": { "type": "number" },
+        "category": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "punishment": { "type": "string", "maxLength": 300 },
+        "lastUpdated": { "type": "string" }
+      },
+      "required": ["id", "number", "title", "description"]
+    },
+    "PunishmentRecord": {
+      "title": "PunishmentRecord",
+      "description": "Minecraft server penalty or ban record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "playerName": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["Waarschuwing", "Mute", "Gevangenis", "Ban", "Boete"] },
+        "reason": { "type": "string", "maxLength": 500 },
+        "duration": { "type": "string", "maxLength": 100 },
+        "adminName": { "type": "string", "maxLength": 50 },
+        "date": { "type": "string" },
+        "status": { "type": "string", "enum": ["Actief", "Verlopen", "Kwijtgescholden"] },
+        "notes": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "playerName", "type", "reason", "adminName", "date", "status"]
+    },
+    "BountyRecord": {
+      "title": "BountyRecord",
+      "description": "Target player bounty for PvP or wanted list",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "targetPlayer": { "type": "string", "maxLength": 50 },
+        "level": { "type": "number" },
+        "payoutPrice": { "type": "string", "maxLength": 200 },
+        "totalValue": { "type": "number" },
+        "reason": { "type": "string", "maxLength": 500 },
+        "contributions": { "type": "array" },
+        "status": { "type": "string", "enum": ["Actief", "Geclaimd", "Ingetrokken"] },
+        "claimedBy": { "type": "string", "maxLength": 50 },
+        "claimedAt": { "type": "string" },
+        "lastUpdated": { "type": "string" }
+      },
+      "required": ["id", "targetPlayer", "reason", "status", "lastUpdated"]
+    },
+    "NotificationItem": {
+      "title": "NotificationItem",
+      "description": "Notification alert for players or admins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "message": { "type": "string", "maxLength": 500 },
+        "type": { "type": "string", "enum": ["event", "plan", "bounty", "punishment", "org", "system"] },
+        "targetTab": { "type": "string", "maxLength": 50 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" },
+        "read": { "type": "boolean" },
+        "forUserId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "title", "message", "type", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": "ServerSettings",
+      "description": "Global server configuration and settings"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Registered Minecraft players and portal accounts"
+    },
+    "/organizations/{orgId}": {
+      "schema": "Organization",
+      "description": "Player organizations and clans"
+    },
+    "/events/{eventId}": {
+      "schema": "EventItem",
+      "description": "Server events and agenda"
+    },
+    "/plans/{planId}": {
+      "schema": "PublicPlan",
+      "description": "Community plans and projects"
+    },
+    "/comments/{commentId}": {
+      "schema": "PlanComment",
+      "description": "Comments under plans"
+    },
+    "/rules/{ruleId}": {
+      "schema": "ServerRule",
+      "description": "Server rules and sanctions"
+    },
+    "/punishments/{punishmentId}": {
+      "schema": "PunishmentRecord",
+      "description": "Player punishments and penalty records"
+    },
+    "/bounties/{bountyId}": {
+      "schema": "BountyRecord",
+      "description": "Player bounties"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "NotificationItem",
+      "description": "Community notifications"
+    }
+  }
+}

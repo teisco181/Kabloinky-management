@@ -1,0 +1,155 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny catch-all (Pillar 4 / Global Safety Net)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened helpers
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Server Settings validation
+    function isValidSettings(data) {
+      return data.serverName is string && data.serverName.size() <= 100
+        && data.serverHost is string && data.serverHost.size() <= 100
+        && data.motherPassword is string && data.motherPassword.size() <= 100;
+    }
+
+    // User validation
+    function isValidUser(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.username is string && data.username.size() > 0 && data.username.size() <= 32
+        && data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    // Organization validation
+    function isValidOrg(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.tag is string && data.tag.size() <= 20
+        && data.leaderName is string && data.leaderName.size() <= 50;
+    }
+
+    // Event validation
+    function isValidEvent(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 150
+        && data.date is string && data.date.size() <= 20
+        && data.authorName is string && data.authorName.size() <= 50;
+    }
+
+    // Plan validation
+    function isValidPlan(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 150
+        && data.description is string && data.description.size() <= 3000
+        && data.authorName is string && data.authorName.size() <= 50;
+    }
+
+    // Comment validation
+    function isValidComment(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.planId is string && data.planId.size() <= 128
+        && data.content is string && data.content.size() > 0 && data.content.size() <= 1000;
+    }
+
+    // Server Rule validation
+    function isValidRule(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 300
+        && data.description is string && data.description.size() <= 5000;
+    }
+
+    // Punishment validation
+    function isValidPunishment(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.playerName is string && data.playerName.size() > 0 && data.playerName.size() <= 50
+        && data.reason is string && data.reason.size() <= 500;
+    }
+
+    // Bounty validation
+    function isValidBounty(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.targetPlayer is string && data.targetPlayer.size() > 0 && data.targetPlayer.size() <= 50
+        && data.reason is string && data.reason.size() <= 500;
+    }
+
+    // Notification validation
+    function isValidNotification(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 150
+        && data.message is string && data.message.size() <= 500;
+    }
+
+    // Match rules for collections
+    match /settings/{settingId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(settingId) && isValidSettings(request.resource.data);
+      allow delete: if false;
+    }
+
+    match /users/{userId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(userId) && isValidUser(request.resource.data);
+      allow delete: if isValidId(userId);
+    }
+
+    match /organizations/{orgId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(orgId) && isValidOrg(request.resource.data);
+      allow delete: if isValidId(orgId);
+    }
+
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(eventId) && isValidEvent(request.resource.data);
+      allow delete: if isValidId(eventId);
+    }
+
+    match /plans/{planId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(planId) && isValidPlan(request.resource.data);
+      allow delete: if isValidId(planId);
+    }
+
+    match /comments/{commentId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(commentId) && isValidComment(request.resource.data);
+      allow delete: if isValidId(commentId);
+    }
+
+    match /rules/{ruleId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(ruleId) && isValidRule(request.resource.data);
+      allow delete: if isValidId(ruleId);
+    }
+
+    match /punishments/{punishmentId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(punishmentId) && isValidPunishment(request.resource.data);
+      allow delete: if isValidId(punishmentId);
+    }
+
+    match /bounties/{bountyId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(bountyId) && isValidBounty(request.resource.data);
+      allow delete: if isValidId(bountyId);
+    }
+
+    match /notifications/{notificationId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(notificationId) && isValidNotification(request.resource.data);
+      allow delete: if isValidId(notificationId);
+    }
+
+    // Test collection for initial connectivity check
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

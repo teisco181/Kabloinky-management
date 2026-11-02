@@ -1,0 +1,8 @@
+{
+  "name": "CraftBeheer - Minecraft Server Community Portal",
+  "description": "Compleet beheerportaal voor je Minecraft server: live server status ping, code-beveiligde IP & Discord, evenementenagenda, organisaties, plannen & chat, serverregels, strafblad, bounties en geavanceerd rollen- en instellingenbeheer met moederwachtwoord.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
